@@ -4,6 +4,8 @@ import os
 import cv2
 import numpy as np
 
+SAVE_SUB_DIR = "mask_inpaint_face"
+
 args = len(sys.argv)
 if args <= 1:
     print("Usage:", file=sys.stderr)
@@ -50,7 +52,11 @@ for image in list_images:
         cv2.circle(mask, (center_x, center_y), radius, 255, -1)
 
     # マスク画像を保存
-    mask_dir = os.path.join(img_dir_path, "mask_inpaint_face")
+    mask_dir = os.path.join(img_dir_path, SAVE_SUB_DIR)
     os.makedirs(mask_dir, exist_ok=True)
-    mask_file = os.path.join(mask_dir, os.path.basename(image))
-    cv2.imwrite(mask_file, mask)
+    mask_file = os.path.basename(image)
+    mask_path = os.path.join(mask_dir, mask_file)
+    cv2.imwrite(mask_path, mask)
+    print(f"Saved {os.path.join(SAVE_SUB_DIR, mask_file)}")
+
+print("Completed!")
