@@ -2,8 +2,11 @@ import sys
 import glob
 import os
 import cv2
+import urllib.request
 import numpy as np
 
+
+FILE_CASCADE = "lbpcascade_animeface.xml"
 SAVE_SUB_DIR = "mask_inpaint_face"
 
 args = len(sys.argv)
@@ -16,8 +19,13 @@ if args <= 1:
 img_dir_path = sys.argv[1]
 list_images = glob.glob(os.path.join(img_dir_path, "*.png"))
 
+# Cascadeファイルのダウンロード
+if not os.path.exists(FILE_CASCADE):
+    url = "https://raw.githubusercontent.com/nagadomi/lbpcascade_animeface/master/lbpcascade_animeface.xml"
+    urllib.request.urlretrieve(url, FILE_CASCADE)
+
 # Haar Cascade分類器の初期化
-face_cascade = cv2.CascadeClassifier("lbpcascade_animeface.xml")
+face_cascade = cv2.CascadeClassifier(FILE_CASCADE)
 
 for image in list_images:
     # 画像ファイルの読み込み

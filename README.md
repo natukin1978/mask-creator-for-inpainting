@@ -16,7 +16,7 @@ Go to project directory and install the module.
 python -m pip install -r requirements.txt
 ```
 
-Download the cascade file from the following link and place it into the project directory.
+Download and save the following files at the first startup.
 
 https://raw.githubusercontent.com/nagadomi/lbpcascade_animeface/master/lbpcascade_animeface.xml
 
