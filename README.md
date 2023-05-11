@@ -42,6 +42,15 @@ A subfolder `mask_inpaint_face` is created and the mask image is generated there
 
 If you would like to contribute to Mask Creator For Inpainting, please open an issue to discuss your ideas or submit a pull request.
 
+## Author
+
+ナツキソ
+
+- Twitter: [@natukin1978iai](https://twitter.com/natukin1978iai)
+- Mastodon: [@natukin1978iai@pawoo.net](https://pawoo.net/web/accounts/2199670)
+- GitHub: [@natukin1978](https://github.com/natukin1978)
+- Mail: natukin1978@hotmail.com
+
 ## License
 
 Mask Creator For Inpainting is released under the [MIT License](https://opensource.org/licenses/MIT).
