@@ -6,6 +6,8 @@ import urllib.request
 import numpy as np
 
 
+os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
+
 FILE_CASCADE = "lbpcascade_animeface.xml"
 SAVE_SUB_DIR = "mask_inpaint_face"
 
