@@ -23,7 +23,9 @@ if not os.path.exists(img_dir_path):
     print(f"{img_dir_path} does not exist.", file=sys.stderr)
     exit(1)
 
-list_images = glob.glob(os.path.join(img_dir_path, "*.png"))
+list_images = []
+for file_ext in ["jpg", "jpeg", "png"]:
+    list_images += glob.glob(os.path.join(img_dir_path, f"*.{file_ext}"))
 if not list_images:
     print(f"No image files found in {img_dir_path}.", file=sys.stderr)
     exit(1)
