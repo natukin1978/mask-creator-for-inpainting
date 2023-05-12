@@ -33,6 +33,8 @@ if not list_images:
 # Cascadeファイルのダウンロード
 if not os.path.exists(FILE_CASCADE):
     url = "https://raw.githubusercontent.com/nagadomi/lbpcascade_animeface/master/lbpcascade_animeface.xml"
+    print("Downloading...")
+    print(url)
     urllib.request.urlretrieve(url, FILE_CASCADE)
 
 # Haar Cascade分類器の初期化
