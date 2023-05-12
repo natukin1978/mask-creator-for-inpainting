@@ -6,6 +6,38 @@ import urllib.request
 import numpy as np
 
 
+def get_faces(face_cascade, gray):
+    min_neighbors = 100
+    while True:
+        faces = face_cascade.detectMultiScale(
+            gray, 1.01, min_neighbors, minSize=(64, 64)
+        )
+        if len(faces) != 0 or min_neighbors == 0:
+            break
+        min_neighbors //= 2
+    return faces
+
+
+def get_max_rect(faces):
+    max_area = 0
+    max_rect = None
+    for x, y, w, h in faces:
+        area = w * h
+        if area > max_area:
+            max_area = area
+            max_rect = (x, y, w, h)
+    return max_rect
+
+
+def draw_circle(mask, rect):
+    if not rect:
+        return
+    (x, y, w, h) = rect
+    center_x, center_y = int(x + w / 2), int(y + h / 2)
+    radius = int(max(w, h) / 2)
+    cv2.circle(mask, (center_x, center_y), radius, 255, -1)
+
+
 os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
 
 FILE_CASCADE = "lbpcascade_animeface.xml"
@@ -50,31 +82,14 @@ for image in list_images:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         # 認識条件を緩くしながら探す
-        min_neighbors = 100
-        while True:
-            faces = face_cascade.detectMultiScale(
-                gray, 1.01, min_neighbors, minSize=(64, 64)
-            )
-            if len(faces) != 0 or min_neighbors == 0:
-                break
-            min_neighbors //= 2
+        faces = get_faces(face_cascade, gray)
 
         # 一番大きい矩形を抽出
-        max_area = 0
-        max_rect = None
-        for x, y, w, h in faces:
-            area = w * h
-            if area > max_area:
-                max_area = area
-                max_rect = (x, y, w, h)
+        max_rect = get_max_rect(faces)
 
         # マスク画像を生成
         mask = np.zeros_like(gray)
-        if max_rect:
-            (x, y, w, h) = max_rect
-            center_x, center_y = int(x + w / 2), int(y + h / 2)
-            radius = int(max(w, h) / 2)
-            cv2.circle(mask, (center_x, center_y), radius, 255, -1)
+        draw_circle(mask, max_rect)
 
         # マスク画像を保存
         mask_dir = os.path.join(img_dir_path, SAVE_SUB_DIR)
