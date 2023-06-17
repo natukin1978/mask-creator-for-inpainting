@@ -33,7 +33,7 @@ def draw_circle(mask, rect):
     if not rect:
         return
     (x, y, w, h) = rect
-    center_x, center_y = int(x + w / 2), int(y + h / 2)
+    center_x, center_y = int(x + w / 2), int(y + h / 3)
     radius = int(max(w, h) / 2)
     cv2.circle(mask, (center_x, center_y), radius, 255, -1)
 
