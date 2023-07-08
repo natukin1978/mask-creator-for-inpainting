@@ -26,17 +26,37 @@ You can use `haarcascade_frontalface_default.xml` if you prefer live action.
 ## Usage
 
 ```
-python main.py (image files folder)
+python mask_creator.py (image files folder)
 ```
 
 It is better to enclose the path in double quotes, as it will be cut off if the path contains spaces.
 
 Example.
 ```
-python main.py "C:\stable-diffusion-webui\outputs\txt2img-images\sample"
+python mask_creator.py "C:\stable-diffusion-webui\outputs\txt2img-images\sample"
 ```
 
 A subfolder `mask_inpaint_face` is created and the mask image is generated there.
+
+
+There is also a tool that overlays an image with a mask.
+
+```
+python mask_overlay.py (image files folder)
+```
+
+A window will appear and overlay the image with a semi-transparent mask.
+
+Use the left and right arrow keys on your keyboard to switch between images.
+
+If the face recognition does not work well and the mask position is bad, press the "Del" key on the keyboard to mark it as "Skip".
+
+(Rest assured that your files will not be deleted.)
+
+You will be asked if the marked image and mask should be moved when exiting the tool.
+
+If you move it, a subfolder called "Skip" will be created in the same place as the image folder,
+and the image and mask will be moved there.
 
 ## Contributing
 
