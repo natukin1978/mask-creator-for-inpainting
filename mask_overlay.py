@@ -43,6 +43,11 @@ for filename in os.listdir(mask_folder):
         mask_path = os.path.join(mask_folder, filename)
         masks.append(mask_path)
 
+# 要素数が一致しない場合、エラーメッセージを表示して終了
+if len(images) != len(masks):
+    messagebox.showerror("Error", "The number of images and masks does not match.")
+    exit(1)
+
 index = 0  # 表示中の画像のインデックス
 skip_indices = []  # スキップする画像のインデックスリスト
 
