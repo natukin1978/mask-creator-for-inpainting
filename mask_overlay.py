@@ -2,6 +2,8 @@ import sys
 import os
 import cv2
 import shutil
+import tkinter as tk
+from tkinter import messagebox
 
 
 os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
@@ -11,8 +13,8 @@ KEY_CODE_WINDOWS_RIGHT = 0x00270000
 KEY_CODE_WINDOWS_DEL = 0x002E0000
 
 MASK_SUB_DIR = "mask_inpaint_face"
-
 WINDOW_TITLE = "Image with Mask"
+DEL_MARK = "DEL"
 
 args = len(sys.argv)
 if args <= 1:
@@ -24,7 +26,7 @@ if args <= 1:
 img_folder = sys.argv[1]
 mask_folder = os.path.join(img_folder, MASK_SUB_DIR)
 
-del_folder = os.path.join(img_folder, "del")
+del_folder = os.path.join(img_folder, DEL_MARK)
 del_mask_folder = os.path.join(del_folder, MASK_SUB_DIR)
 
 # 画像フォルダ内の画像を取得
@@ -42,6 +44,10 @@ for filename in os.listdir(mask_folder):
         masks.append(mask_path)
 
 index = 0  # 表示中の画像のインデックス
+del_indices = []  # 削除する画像のインデックスリスト
+
+root = tk.Tk()
+root.withdraw()  # ウィンドウを非表示にする
 
 while True:
     # 画像とマスクを読み込み
@@ -53,6 +59,10 @@ while True:
 
     # マスクの透過処理
     overlay = cv2.addWeighted(img, 0.2, overlay, 0.8, 1)
+
+    # マークを付ける
+    if index in del_indices:
+        cv2.putText(overlay, DEL_MARK, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     # 画像と重ねた結果を表示
     cv2.imshow(WINDOW_TITLE, overlay)
@@ -75,19 +85,25 @@ while True:
         # 右矢印キーが押された場合、次の画像へ
         index = min(len(images) - 1, index + 1)
     elif key == KEY_CODE_WINDOWS_DEL:
-        # Delキーが押された場合、画像を表示候補から除外して退避
-        removed_image_path = images.pop(index)
-        removed_mask_path = masks.pop(index)
+        # Delキーが押された場合、画像の削除リストに追加または削除
+        if index in del_indices:
+            del_indices.remove(index)
+        else:
+            del_indices.append(index)
 
+# ファイルの移動を実行するか確認
+if del_indices:
+    result = messagebox.askquestion("Confirmation", "Do you want to move the deleted files?")
+    if result == "yes":
         # 画像とマスクをdelフォルダに移動
         os.makedirs(del_folder, exist_ok=True)
-        shutil.move(removed_image_path, del_folder)
         os.makedirs(del_mask_folder, exist_ok=True)
-        shutil.move(removed_mask_path, del_mask_folder)
-
-        # 画像削除後のインデックス調整
-        if index >= len(images):
-            index = max(0, len(images) - 1)
+        for index in del_indices:
+            removed_image_path = images[index]
+            removed_mask_path = masks[index]
+            shutil.move(removed_image_path, del_folder)
+            shutil.move(removed_mask_path, del_mask_folder)
+        messagebox.showinfo("Information", f"Files moved to {DEL_MARK} folder.")
 
 # ウィンドウを閉じる
 cv2.destroyAllWindows()
