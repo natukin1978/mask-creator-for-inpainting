@@ -14,7 +14,7 @@ KEY_CODE_WINDOWS_DEL = 0x002E0000
 
 MASK_SUB_DIR = "mask_inpaint_face"
 WINDOW_TITLE = "Image with Mask"
-DEL_MARK = "DEL"
+SKIP_MARK = "Skip"
 
 args = len(sys.argv)
 if args <= 1:
@@ -26,8 +26,8 @@ if args <= 1:
 img_folder = sys.argv[1]
 mask_folder = os.path.join(img_folder, MASK_SUB_DIR)
 
-del_folder = os.path.join(img_folder, DEL_MARK)
-del_mask_folder = os.path.join(del_folder, MASK_SUB_DIR)
+skip_folder = os.path.join(img_folder, SKIP_MARK)
+skip_mask_folder = os.path.join(skip_folder, MASK_SUB_DIR)
 
 # 画像フォルダ内の画像を取得
 images = []
@@ -44,7 +44,7 @@ for filename in os.listdir(mask_folder):
         masks.append(mask_path)
 
 index = 0  # 表示中の画像のインデックス
-del_indices = []  # 削除する画像のインデックスリスト
+skip_indices = []  # スキップする画像のインデックスリスト
 
 root = tk.Tk()
 root.withdraw()  # ウィンドウを非表示にする
@@ -61,8 +61,8 @@ while True:
     overlay = cv2.addWeighted(img, 0.2, overlay, 0.8, 1)
 
     # マークを付ける
-    if index in del_indices:
-        cv2.putText(overlay, DEL_MARK, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    if index in skip_indices:
+        cv2.putText(overlay, SKIP_MARK, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     # 画像と重ねた結果を表示
     cv2.imshow(WINDOW_TITLE, overlay)
@@ -85,30 +85,25 @@ while True:
         # 右矢印キーが押された場合、次の画像へ
         index = min(len(images) - 1, index + 1)
     elif key == KEY_CODE_WINDOWS_DEL:
-        # Delキーが押された場合、画像の削除リストに追加または削除
-        if index in del_indices:
-            del_indices.remove(index)
+        # Delキーが押された場合、画像のスキップリストに追加または削除
+        if index in skip_indices:
+            skip_indices.remove(index)
         else:
-            del_indices.append(index)
-
-        # 削除後のインデックス調整
-        if index >= len(images):
-            index = max(0, len(images) - 1)
-        else:
-            index += 1
+            skip_indices.append(index)
+            index = min(len(images) - 1, index + 1)  # 次の画像へ
 
 # ファイルの移動を実行するか確認
-if del_indices:
-    result = messagebox.askquestion("Confirmation", "Do you want to move the deleted files?")
+if skip_indices:
+    result = messagebox.askquestion("Confirmation", "Do you want to move the skipped files?")
     if result == "yes":
-        # 画像とマスクをdelフォルダに移動
-        os.makedirs(del_folder, exist_ok=True)
-        os.makedirs(del_mask_folder, exist_ok=True)
-        for index in del_indices:
+        # 画像とマスクをskipフォルダに移動
+        os.makedirs(skip_folder, exist_ok=True)
+        os.makedirs(skip_mask_folder, exist_ok=True)
+        for index in skip_indices:
             removed_image_path = images[index]
             removed_mask_path = masks[index]
-            shutil.move(removed_image_path, del_folder)
-            shutil.move(removed_mask_path, del_mask_folder)
+            shutil.move(removed_image_path, skip_folder)
+            shutil.move(removed_mask_path, skip_mask_folder)
 
 # ウィンドウを閉じる
 cv2.destroyAllWindows()
