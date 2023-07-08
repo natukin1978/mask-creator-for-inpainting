@@ -91,6 +91,12 @@ while True:
         else:
             del_indices.append(index)
 
+        # 削除後のインデックス調整
+        if index >= len(images):
+            index = max(0, len(images) - 1)
+        else:
+            index += 1
+
 # ファイルの移動を実行するか確認
 if del_indices:
     result = messagebox.askquestion("Confirmation", "Do you want to move the deleted files?")
@@ -103,7 +109,6 @@ if del_indices:
             removed_mask_path = masks[index]
             shutil.move(removed_image_path, del_folder)
             shutil.move(removed_mask_path, del_mask_folder)
-        messagebox.showinfo("Information", f"Files moved to {DEL_MARK} folder.")
 
 # ウィンドウを閉じる
 cv2.destroyAllWindows()
