@@ -21,10 +21,19 @@ if args <= 1:
     print("Mask Overlay For Inpainting v0.04", file=sys.stderr)
     print("Usage:", file=sys.stderr)
     print(f"python {os.path.basename(__file__)} (image files folder)", file=sys.stderr)
+    messagebox.showerror("Error", "Please pass the image folder.")
     exit(1)
 
 img_folder = sys.argv[1]
 mask_folder = os.path.join(img_folder, MASK_SUB_DIR)
+
+if not os.path.isdir(img_folder):
+    messagebox.showerror("Error", "Invalid image folder path.")
+    exit(1)
+
+if not os.path.isdir(mask_folder):
+    messagebox.showerror("Error", "Invalid mask folder path.")
+    exit(1)
 
 skip_folder = os.path.join(img_folder, SKIP_MARK)
 skip_mask_folder = os.path.join(skip_folder, MASK_SUB_DIR)
