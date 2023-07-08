@@ -45,7 +45,7 @@ SAVE_SUB_DIR = "mask_inpaint_face"
 
 args = len(sys.argv)
 if args <= 1:
-    print("Mask Creator For Inpainting v0.02", file=sys.stderr)
+    print("Mask Creator For Inpainting v0.04", file=sys.stderr)
     print("Usage:", file=sys.stderr)
     print(f"python {os.path.basename(__file__)} (image files folder)", file=sys.stderr)
     exit(1)
