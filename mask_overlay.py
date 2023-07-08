@@ -22,18 +22,18 @@ if args <= 1:
     print("Usage:", file=sys.stderr)
     print(f"python {os.path.basename(__file__)} (image files folder)", file=sys.stderr)
     messagebox.showerror("Error", "Please pass the image folder.")
-    exit(1)
+    sys.exit(1)
 
 img_folder = sys.argv[1]
 mask_folder = os.path.join(img_folder, MASK_SUB_DIR)
 
 if not os.path.isdir(img_folder):
     messagebox.showerror("Error", "Invalid image folder path.")
-    exit(1)
+    sys.exit(1)
 
 if not os.path.isdir(mask_folder):
     messagebox.showerror("Error", "Invalid mask folder path.")
-    exit(1)
+    sys.exit(1)
 
 skip_folder = os.path.join(img_folder, SKIP_MARK)
 skip_mask_folder = os.path.join(skip_folder, MASK_SUB_DIR)
@@ -55,7 +55,7 @@ for filename in os.listdir(mask_folder):
 # 要素数が一致しない場合、エラーメッセージを表示して終了
 if len(images) != len(masks):
     messagebox.showerror("Error", "The number of images and masks does not match.")
-    exit(1)
+    sys.exit(1)
 
 index = 0  # 表示中の画像のインデックス
 skip_indices = []  # スキップする画像のインデックスリスト
