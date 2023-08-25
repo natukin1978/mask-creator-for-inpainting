@@ -76,7 +76,9 @@ while True:
 
     # マークを付ける
     if index in skip_indices:
-        cv2.putText(overlay, SKIP_MARK, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(
+            overlay, SKIP_MARK, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2
+        )
 
     # 画像と重ねた結果を表示
     cv2.imshow(WINDOW_TITLE, overlay)
@@ -108,7 +110,9 @@ while True:
 
 # ファイルの移動を実行するか確認
 if skip_indices:
-    result = messagebox.askquestion("Confirmation", "Do you want to move the skipped files?")
+    result = messagebox.askquestion(
+        "Confirmation", "Do you want to move the skipped files?"
+    )
     if result == "yes":
         # 画像とマスクをskipフォルダに移動
         os.makedirs(skip_folder, exist_ok=True)
